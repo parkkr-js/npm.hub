@@ -26,8 +26,6 @@ export function DetailPackage({ result }: DetailPackageItemProps) {
     { label: 'Score', value: Math.round(score.final * 100) },
   ];
 
-  const [isExpanded, setIsExpanded] = useState(false);
-
   return (
     <div>
       <div className="flex flex-col bg-secondary-90 w-[785px] px-6 min-h-56 rounded-[20px]">
@@ -52,18 +50,8 @@ export function DetailPackage({ result }: DetailPackageItemProps) {
             <div className="flex items-center gap-2">
               <p className="text-4xl font-semibold text-primary-50">{pkg.name}</p>
             </div>
-            <div
-              className={`flex mt-9 relative  ${isExpanded ? 'h-auto min-h-[45px]' : 'h-[45px] overflow-hidden line-clamp-2'}`}
-            >
+            <div className="flex mt-9 relative h-auto min-h-[45px]">
               <div className="w-[450px] text-surface-white ">{pkg.description}</div>
-              {pkg.description.length > 100 && (
-                <button
-                  onClick={() => setIsExpanded(!isExpanded)}
-                  className="text-secondary-60 w-8 transition-colors"
-                >
-                  {isExpanded ? 'less' : 'more'}
-                </button>
-              )}
             </div>
 
             <div className="mt-4 flex">

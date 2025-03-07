@@ -32,7 +32,7 @@ export function SearchResultItem({ result }: SearchResultItemProps) {
             {badges?.isMostPopular && <Badge variant="popular">most popular</Badge>}
           </div>
 
-          <p className="mt-2 text-surface-white">{pkg.description}</p>
+          <p className="mt-2 w-[30.56rem] truncate text-surface-white">{pkg.description}</p>
 
           <div className="mt-3">
             <Keywords keywords={pkg.keywords} />

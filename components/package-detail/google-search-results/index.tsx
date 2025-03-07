@@ -7,11 +7,12 @@ import { ExternalLink, Image as ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 import { fetchGoogleSearch } from '@/app/api/google-search/action';
 import { GoogleSearchResultSkeleton } from '@/components/skeletons/GoogleSearchSkeleton';
-
+import { SearchError } from '@/types/error';
+import { ErrorSearch } from './ErrorSearch';
 export function GoogleSearchResults({ packageName }: SearchResultsProps) {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<SearchError | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -22,7 +23,14 @@ export function GoogleSearchResults({ packageName }: SearchResultsProps) {
         const data = await fetchGoogleSearch(packageName);
         setResults(data);
       } catch (err) {
-        setError(err instanceof Error ? err : new Error('Failed to fetch search results'));
+        const searchError: SearchError =
+          err instanceof Error ? err : new Error('Failed to fetch search results');
+
+        if (err instanceof Error && 'status' in err) {
+          searchError.status = (err as any).status;
+        }
+
+        setError(searchError);
       } finally {
         setIsLoading(false);
       }
@@ -44,14 +52,7 @@ export function GoogleSearchResults({ packageName }: SearchResultsProps) {
   }
 
   if (error) {
-    return (
-      <div className="w-80 max-h-[560px] bg-secondary-90 rounded-[20px] p-6 mb-6">
-        <p className="text-xl font-semibold mb-2 text-[#ff000083]">
-          We couldn’t find any google-search information on this package. It may not be available
-          yet.
-        </p>
-      </div>
-    );
+    return <ErrorSearch error={error} />;
   }
 
   return (

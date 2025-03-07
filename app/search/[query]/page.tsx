@@ -19,9 +19,11 @@ export default async function SearchPage({ params }: SearchPageProps) {
   const initialResults = await getSearchResultPackages(params.query);
 
   if (initialResults.length === 0) {
-    <Errorlayout message="This text does not match any packages" />;
-  } else if (initialResults[0].package.name == 'error') {
-    <Errorlayout message="The text must be between 2 and 64 characters" />;
+    return <Errorlayout message="This text does not match any packages" />;
+  }
+
+  if (initialResults[0].package.name === 'error') {
+    return <Errorlayout message="The text must be between 2 and 64 characters" />;
   }
 
   return (

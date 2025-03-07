@@ -33,8 +33,8 @@ export async function GET(request: Request) {
 
     return NextResponse.json(
       {
-        error: 'Failed to fetch trends data',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : 'Failed to fetch search results',
+        items: [],
       },
       { status: 500 }
     );

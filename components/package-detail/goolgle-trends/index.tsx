@@ -13,18 +13,19 @@ import {
   CartesianGrid,
   Legend,
 } from 'recharts';
-
+import { TrendsError } from '@/types/error';
 import { CustomTooltip } from './CustomTooltip';
 import { GoogletrendsAtom } from '@/store/atoms';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { GoogleTrendsProps, TrendsData } from '@/types/google-trends';
 import { fetchGoogleTrends } from '@/app/api/google-trends/actions';
 import { GoogleTrendsSkeleton } from '@/components/skeletons/GoogleTrendsSkeleton';
+import { ErrorTrends } from './ErrorTrends';
 
 export function GoogleTrends({ packageName }: GoogleTrendsProps) {
   const [trendsData, setTrendsData] = useState<TrendsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<TrendsError | null>(null);
 
   const setGoogleTrends = useSetRecoilState(GoogletrendsAtom);
 
@@ -42,7 +43,12 @@ export function GoogleTrends({ packageName }: GoogleTrendsProps) {
           setGoogleTrends(null);
         }
       } catch (err) {
-        setError(err instanceof Error ? err : new Error('데이터를 불러오는데 실패했습니다'));
+        const trendsError: TrendsError =
+          err instanceof Error ? err : new Error('Failed to fetch google trends data');
+        if (err instanceof Error && 'status' in err) {
+          trendsError.status = (err as any).status;
+        }
+        setError(trendsError);
       } finally {
         setIsLoading(false);
       }
@@ -64,14 +70,23 @@ export function GoogleTrends({ packageName }: GoogleTrendsProps) {
   }, [trendsData]);
 
   if (error) {
-    <div className="w-[785px] bg-secondary-90 rounded-[20px] p-6 mb-6">
-      <p className="text-xl font-semibold mb-2 text-[#ff000083]">Soon, It will be back.</p>
-    </div>;
+    return <ErrorTrends error={error} />;
   }
+
   if (isLoading) {
     return <GoogleTrendsSkeleton />;
   }
 
+  if (!trendsData?.interest?.length) {
+    return (
+      <div className="w-[785px] bg-secondary-90 rounded-[20px] p-6 mb-6">
+        <p className="text-xl font-semibold mb-2 text-[#ff000083]">
+          We couldn’t find any google-trends information on this package. It may not be available
+          yet.
+        </p>
+      </div>
+    );
+  }
   return (
     <>
       {trendsData?.interest?.length ? (

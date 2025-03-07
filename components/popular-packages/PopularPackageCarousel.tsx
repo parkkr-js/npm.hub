@@ -32,13 +32,11 @@ export default function PopularPackageCarousel({ packages }: { packages: Popular
             className="flex flex-col w-[300px] h-[205px] py-[23px] rounded-[23.03px] px-[20.9px] flex-none bg-secondary-90/50 border-surface-medium"
           >
             <div>
-              <Link
-                href={`/detail/${slashEncoding(pkg.name)}`}
-                className="text-2xl font-semibold text-primary-40"
-                onClick={resetSearchQuery}
-              >
-                {pkg.name || 'Unknown Package'}
-              </Link>
+              <p className="text-2xl font-semibold w-auto text-primary-40 truncate">
+                <Link href={`/detail/${slashEncoding(pkg.name)}`} onClick={resetSearchQuery}>
+                  {pkg.name || 'Unknown Package'}
+                </Link>
+              </p>
             </div>
             <div className="mt-4">
               <p className="text-surface-white text-base whitespace-normal h-[72px] line-clamp-3">
