@@ -12,16 +12,20 @@ export default function NotFound() {
   }
 
   return (
-    <main className="flex h-full flex-col items-center justify-center gap-3">
-      <FaceFrownIcon className="w-10 text-primary-60" />
-      <p className="font-tommy text-9xl text-primary-60 font-bold tracking-[2.4px]">
-        not found page
+    <main className="flex h-full flex-col mt-40 items-center justify-center gap-3">
+      <p className="font-tommy text-[77.336px] text-primary-50 font-extrabold">OOPS!</p>
+      <p className="font-tommy text-[77.336px] -mt-9 text-primary-50 font-extrabold">
+        Page not found.
       </p>
+      <p className="text-2xl font-medium text-[#FFF]">
+        we can't seem to find the page you're looking for.
+      </p>
+      <p className="text-2xl font-medium text-[#FFF]">Try going bact to the previous page</p>
       <Link
         href="/"
-        className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-400"
+        className="mt-4 rounded-[50px] bg-secondary-90 px-4 py-2 text-xl text-[#F5F6F8]"
       >
-        Go Back
+        BACK TO HOME
       </Link>
     </main>
   );

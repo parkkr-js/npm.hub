@@ -16,9 +16,9 @@ export function Errorlayout({ message }: Errorprops) {
       <nav>
         <Link
           href="/"
-          className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-400"
+          className="mt-4 rounded-[50px] bg-secondary-90 px-4 py-2 text-xl text-[#F5F6F8]"
         >
-          Go Back
+          BACK TO HOME
         </Link>
       </nav>
     </main>

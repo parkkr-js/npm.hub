@@ -1,7 +1,7 @@
 // layoutConfig.ts
 export const pageConfigs = {
   home: {
-    searchBarWidth: 'w-[805px]',
+    searchBarWidth: 'w-[50.31rem]',
     searchBarHeight: 'h-[55px]',
     searchBarPosition: 'mt-8',
     backgroundImage: '/images/대쉬보드 중앙 상단.svg',
@@ -12,7 +12,7 @@ export const pageConfigs = {
     showSearchSuggestions: true,
   },
   search: {
-    searchBarWidth: 'w-[608px]',
+    searchBarWidth: 'w-[38rem]',
     searchBarHeight: 'h-auto',
     searchBarPosition: 'ml-4',
     backgroundImage: '/images/검색결과 페이지 오른쪽 배경 작은 원.svg',
@@ -56,5 +56,5 @@ export function getPageConfig(pathname: string): PageConfigType {
     return pageConfigs.detail;
   }
 
-  return pageConfigs.home;
+  return pageConfigs.search;
 }
