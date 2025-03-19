@@ -1,50 +1,50 @@
 // store/atoms.ts
 
-import { atom } from 'recoil';
-import {
-  SuggestionPackageInfo,
-  SearchResultPackageInfo,
-  DetailResultPackageInfo,
-} from '@/types/package';
-import { PopularPackageInfo } from '@/types/package';
-import { sortType } from '@/types/common';
+import { atom } from "recoil";
+import type {
+	SuggestionPackageInfo,
+	SearchResultPackageInfo,
+	DetailResultPackageInfo,
+} from "@/types/package";
+import type { PopularPackageInfo } from "@/types/package";
+import type { sortType } from "@/types/common";
 
 export const popularPackagesAtom = atom<PopularPackageInfo[]>({
-  key: 'popularPackagesAtom',
-  default: [],
+	key: "popularPackagesAtom",
+	default: [],
 });
 
 export const searchQueryAtom = atom<string>({
-  key: 'searchQueryAtom',
-  default: '',
+	key: "searchQueryAtom",
+	default: "",
 });
 
 export const GoogletrendsAtom = atom<number | null>({
-  key: 'GoogletrendsnumberAtom',
-  default: 0,
+	key: "GoogletrendsnumberAtom",
+	default: 0,
 });
 
 export const selectedKeywordAtom = atom<string | null>({
-  key: 'selectedKeywordAtom',
-  default: '',
+	key: "selectedKeywordAtom",
+	default: "",
 });
 
 export const suggestionsAtom = atom<SuggestionPackageInfo[]>({
-  key: 'suggestionsAtom',
-  default: [],
+	key: "suggestionsAtom",
+	default: [],
 });
 
 export const searchResultsAtom = atom<SearchResultPackageInfo[]>({
-  key: 'searchResultsAtom',
-  default: [],
+	key: "searchResultsAtom",
+	default: [],
 });
 
 export const detailPackageAtom = atom<DetailResultPackageInfo[]>({
-  key: 'detailPackageAtom',
-  default: [],
+	key: "detailPackageAtom",
+	default: [],
 });
 
 export const sortTypeAtom = atom<sortType>({
-  key: 'sortTypeAtom',
-  default: 'default',
+	key: "sortTypeAtom",
+	default: "default",
 });
