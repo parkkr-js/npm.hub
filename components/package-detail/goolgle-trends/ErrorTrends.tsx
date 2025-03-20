@@ -1,4 +1,4 @@
-import { TrendsError } from '@/types/error';
+import type { TrendsError } from '@/types/error';
 
 interface ErrorTrendsProps {
   error: TrendsError;
@@ -16,7 +16,8 @@ export function ErrorTrends({ error }: ErrorTrendsProps) {
         </p>
       </div>
     );
-  } else if (error.status === 403 || error.message.includes('API Key')) {
+  }
+  if (error.status === 403 || error.message.includes('API Key')) {
     return (
       <div className="w-[785px] bg-secondary-90 rounded-[20px] p-6 mb-6">
         <p className="text-xl font-semibold mb-2 text-orange-400">API 접근 문제</p>
@@ -25,7 +26,8 @@ export function ErrorTrends({ error }: ErrorTrendsProps) {
         </p>
       </div>
     );
-  } else if (error.status === 429) {
+  }
+  if (error.status === 429) {
     return (
       <div className="w-[785px] bg-secondary-90 rounded-[20px] p-6 mb-6">
         <p className="text-xl font-semibold mb-2 text-purple-400">요청 한도 초과</p>
@@ -35,12 +37,14 @@ export function ErrorTrends({ error }: ErrorTrendsProps) {
         <button
           onClick={() => window.location.reload()}
           className="mt-4 px-4 py-2 bg-secondary-60 text-white rounded-md hover:bg-secondary-50 transition-colors"
+          type="button"
         >
           다시 시도
         </button>
       </div>
     );
-  } else if (error.status === 500) {
+  }
+  if (error.status === 500) {
     return (
       <div className="w-[785px] bg-secondary-90 rounded-[20px] p-6 mb-6">
         <p className="text-xl font-semibold mb-2 text-red-500">서버 오류</p>
@@ -50,6 +54,7 @@ export function ErrorTrends({ error }: ErrorTrendsProps) {
         <button
           onClick={() => window.location.reload()}
           className="mt-4 px-4 py-2 bg-secondary-60 text-white rounded-md hover:bg-secondary-50 transition-colors"
+          type="button"
         >
           다시 시도
         </button>
