@@ -1,20 +1,20 @@
 "use client";
-import { useEffect, useState, useMemo } from "react";
+import { getWeeklyDownloads } from "@/app/api/weekly-down/action";
+import { WeeklyDownSkeleton } from "@/components/skeletons/WeeklyDownSkeleton";
+import type { DownloadsData, WeeklyDownload } from "@/types/weeklydown";
+import { useEffect, useMemo, useState } from "react";
 import {
-	LineChart,
-	Line,
-	XAxis,
-	YAxis,
-	ReferenceLine,
-	Tooltip,
-	ResponsiveContainer,
 	CartesianGrid,
 	Legend,
+	Line,
+	LineChart,
+	ReferenceLine,
+	ResponsiveContainer,
+	Tooltip,
+	XAxis,
+	YAxis,
 } from "recharts";
 import { CustomTooltip } from "./CustomTooltip";
-import type { WeeklyDownload, DownloadsData } from "@/types/weeklydown";
-import { getWeeklyDownloads } from "@/app/api/weekly-down/route";
-import { WeeklyDownSkeleton } from "@/components/skeletons/WeeklyDownSkeleton";
 
 //useones 라는 hook 만들어서 첫 렌더링 될때만 한번만 나오면됨
 

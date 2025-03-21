@@ -4,6 +4,7 @@ import axios from "axios";
 const NPM_API_URL = process.env.NEXT_PUBLIC_NPM_API_URL;
 const NPM_DOWNLOADS_ENDPOINT =
 	process.env.NEXT_PUBLIC_NPM_DOWNLOAD_YEAR_ENDPOINT;
+
 export async function getWeeklyDownloads(
 	packageName: string,
 ): Promise<WeeklyDownload> {
