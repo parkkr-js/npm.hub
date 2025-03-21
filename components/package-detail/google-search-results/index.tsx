@@ -1,18 +1,6 @@
 "use client";
 
-<<<<<<< HEAD
-import React, { useEffect, useState, useRef } from 'react';
-import { Card } from '@/components/ui/card';
-import type { SearchResult, SearchResultsProps } from '@/types/google-search';
-import { ExternalLink, Image as ImageIcon } from 'lucide-react';
-import Image from 'next/image';
-import { fetchGoogleSearch } from '@/app/api/google-search/action';
-import { GoogleSearchResultSkeleton } from '@/components/skeletons/GoogleSearchSkeleton';
-import type { SearchError } from '@/types/error';
-import { ErrorSearch } from './ErrorSearch';
-=======
 import React, { useEffect, useState, useRef } from "react";
-import { Card } from "@/components/ui/card";
 import type { SearchResult, SearchResultsProps } from "@/types/google-search";
 import { ExternalLink, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
