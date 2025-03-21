@@ -16,7 +16,8 @@ export function ErrorSearch({ error }: ErrorSearchProps) {
 				</p>
 			</div>
 		);
-	} else if (error.status === 403 || error.message.includes("API Key")) {
+	}
+	if (error.status === 403 || error.message.includes("API Key")) {
 		return (
 			<div className="w-80 bg-secondary-90 rounded-[20px] p-6 mb-6">
 				<p className="text-xl font-semibold mb-2 text-orange-400">
@@ -27,7 +28,8 @@ export function ErrorSearch({ error }: ErrorSearchProps) {
 				</p>
 			</div>
 		);
-	} else if (error.status === 429) {
+	}
+	if (error.status === 429) {
 		return (
 			<div className="w-80 bg-secondary-90 rounded-[20px] p-6 mb-6">
 				<p className="text-xl font-semibold mb-2 text-purple-400">
@@ -37,6 +39,7 @@ export function ErrorSearch({ error }: ErrorSearchProps) {
 					API 한도에 도달했습니다. 몇 분 후에 다시 시도해 주세요.
 				</p>
 				<button
+					type="button"
 					onClick={() => window.location.reload()}
 					className="mt-4 px-4 py-2 bg-secondary-60 text-white rounded-md hover:bg-secondary-50 transition-colors"
 				>
@@ -44,7 +47,8 @@ export function ErrorSearch({ error }: ErrorSearchProps) {
 				</button>
 			</div>
 		);
-	} else if (error.status === 500) {
+	}
+	if (error.status === 500) {
 		return (
 			<div className="w-80 bg-secondary-90 rounded-[20px] p-6 mb-6">
 				<p className="text-xl font-semibold mb-2 text-red-500">서버 오류</p>
@@ -52,6 +56,7 @@ export function ErrorSearch({ error }: ErrorSearchProps) {
 					검색 서비스에 기술적인 문제가 발생했습니다. 우리 팀에 통보되었습니다.
 				</p>
 				<button
+					type="button"
 					onClick={() => window.location.reload()}
 					className="mt-4 px-4 py-2 bg-secondary-60 text-white rounded-md hover:bg-secondary-50 transition-colors"
 				>
