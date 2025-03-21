@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
-import type { SearchResult, SearchResultsProps } from "@/types/google-search";
-import { ExternalLink, Image as ImageIcon } from "lucide-react";
-import Image from "next/image";
 import { fetchGoogleSearch } from "@/app/api/google-search/action";
 import { GoogleSearchResultSkeleton } from "@/components/skeletons/GoogleSearchSkeleton";
 import type { SearchError } from "@/types/error";
+import type { SearchResult, SearchResultsProps } from "@/types/google-search";
+import { ExternalLink, Image as ImageIcon } from "lucide-react";
+import Image from "next/image";
+import React, { useEffect, useState, useRef } from "react";
 import { ErrorSearch } from "./ErrorSearch";
->>>>>>> c83c34460887385d065db6da92f103fd943a76a9
+
 export function GoogleSearchResults({ packageName }: SearchResultsProps) {
 	const [results, setResults] = useState<SearchResult[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
