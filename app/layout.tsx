@@ -17,10 +17,9 @@ export const metadata: Metadata = {
 	manifest: "/manifest.json",
 	icons: {
 		icon: [
-			{ url: "/favicon.svg", type: "image/svg+xml" },
+			{ url: "/favicon-48x48.png", sizes: "48x48", type: "image/png" },
 			{ url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
 			{ url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-			{ url: "/favicon-48x48.png", sizes: "48x48", type: "image/png" },
 		],
 		apple: "/apple-touch-icon.png",
 	},
@@ -82,13 +81,29 @@ export const metadata: Metadata = {
 		title: "NPM Hub - Package Analytics Made Simple",
 		description:
 			"Find the perfect NPM packages with comprehensive analytics, trends, and insights.",
-		creator: "@npmhub",
+		creator: "박지성, 우병희",
 		images: ["/twitter-image.png"],
 	},
 	verification: {
 		google: "KKAVIyXJmhqKL0jj2c6OT8mUawJAktjzV88OUMnCm_s",
 	},
 	category: "Technology",
+};
+
+const websiteSchema = {
+	"@context": "https://schema.org",
+	"@type": "WebSite",
+	name: "NPM Hub",
+	alternateName: ["NPM Package Analytics", "npmhub.vercel.app"],
+	url: "https://npmhub.vercel.app/",
+};
+
+const organizationSchema = {
+	"@context": "https://schema.org",
+	"@type": "Organization",
+	name: "NPM Hub",
+	url: "https://npmhub.vercel.app/",
+	logo: "https://npmhub.vercel.app/apple-touch-icon.png",
 };
 
 export default function RootLayout({
@@ -99,37 +114,12 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<head>
-				<Script
-					id="schema-org-organization"
-					type="application/ld+json"
-					strategy="afterInteractive"
-				>
-					{JSON.stringify({
-						"@context": "https://schema.org",
-						"@type": "Organization",
-						name: "NPM Hub",
-						url: "https://npmhub.vercel.app",
-						logo: "https://npmhub.vercel.app/favicon.svg",
-						sameAs: [],
-					})}
+				<Script id="schema-org-website" type="application/ld+json">
+					{JSON.stringify(websiteSchema)}
 				</Script>
-				<Script
-					id="schema-org-website"
-					type="application/ld+json"
-					strategy="afterInteractive"
-				>
-					{JSON.stringify({
-						"@context": "https://schema.org",
-						"@type": "WebSite",
-						name: "NPM Hub",
-						url: "https://npmhub.vercel.app",
-						description:
-							"Discover, analyze, and compare NPM packages with real-time analytics, download trends, GitHub metrics, and dependency insights.",
-						publisher: {
-							"@type": "Organization",
-							name: "NPM Hub",
-						},
-					})}
+
+				<Script id="schema-org-organization" type="application/ld+json">
+					{JSON.stringify(organizationSchema)}
 				</Script>
 			</head>
 			<body>
