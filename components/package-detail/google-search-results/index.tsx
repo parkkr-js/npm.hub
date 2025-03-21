@@ -2,12 +2,12 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { Card } from '@/components/ui/card';
-import { SearchResult, SearchResultsProps } from '@/types/google-search';
+import type { SearchResult, SearchResultsProps } from '@/types/google-search';
 import { ExternalLink, Image as ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 import { fetchGoogleSearch } from '@/app/api/google-search/action';
 import { GoogleSearchResultSkeleton } from '@/components/skeletons/GoogleSearchSkeleton';
-import { SearchError } from '@/types/error';
+import type { SearchError } from '@/types/error';
 import { ErrorSearch } from './ErrorSearch';
 export function GoogleSearchResults({ packageName }: SearchResultsProps) {
   const [results, setResults] = useState<SearchResult[]>([]);
