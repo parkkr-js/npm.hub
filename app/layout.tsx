@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "@/styles/globals.css";
 import ClientRoot from "@/components/ClientRoot";
 import ClientLayout from "@/components/layout/ClientLayout";
+import Script from "next/script";
 
 export const metadata: Metadata = {
 	metadataBase: new URL("https://npmhub.vercel.app"),
@@ -97,6 +98,40 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en">
+			<head>
+				<Script
+					id="schema-org-organization"
+					type="application/ld+json"
+					strategy="afterInteractive"
+				>
+					{JSON.stringify({
+						"@context": "https://schema.org",
+						"@type": "Organization",
+						name: "NPM Hub",
+						url: "https://npmhub.vercel.app",
+						logo: "https://npmhub.vercel.app/favicon.svg",
+						sameAs: [],
+					})}
+				</Script>
+				<Script
+					id="schema-org-website"
+					type="application/ld+json"
+					strategy="afterInteractive"
+				>
+					{JSON.stringify({
+						"@context": "https://schema.org",
+						"@type": "WebSite",
+						name: "NPM Hub",
+						url: "https://npmhub.vercel.app",
+						description:
+							"Discover, analyze, and compare NPM packages with real-time analytics, download trends, GitHub metrics, and dependency insights.",
+						publisher: {
+							"@type": "Organization",
+							name: "NPM Hub",
+						},
+					})}
+				</Script>
+			</head>
 			<body>
 				<ClientRoot>
 					<ClientLayout>{children}</ClientLayout>
