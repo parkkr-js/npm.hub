@@ -1,18 +1,20 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo } from 'react';
-import { useSetRecoilState, useRecoilValue } from 'recoil';
-import { detailPackageAtom } from '@/store/atoms';
-import { DetailResultPackageInfo } from '@/types/package';
+import { useEffect, useMemo } from "react";
+import { useSetRecoilState, useRecoilValue } from "recoil";
+import { detailPackageAtom } from "@/store/atoms";
+import type { DetailResultPackageInfo } from "@/types/package";
 
-import { DetailPackage } from './DetailPackagefinal';
+import { DetailPackage } from "./DetailPackagefinal";
 
 interface DetailPackageWrapperProps {
-  initialResults: DetailResultPackageInfo[];
+	initialResults: DetailResultPackageInfo[];
 }
 
-export function DetailPackageWrapper({ initialResults }: DetailPackageWrapperProps) {
-  const packageDetail = initialResults[0];
+export function DetailPackageWrapper({
+	initialResults,
+}: DetailPackageWrapperProps) {
+	const packageDetail = initialResults[0];
 
-  return <DetailPackage result={packageDetail} />;
+	return <DetailPackage result={packageDetail} />;
 }

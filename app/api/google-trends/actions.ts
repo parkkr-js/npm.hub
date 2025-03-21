@@ -1,38 +1,52 @@
-// app/api/google-trends/actions.ts
-import { TrendsData } from '@/types/google-trends';
-import { removeSpecialChars } from '@/lib/utils';
+//app/api/google-trends/actions.ts
 
-export async function fetchGoogleTrends(packageName: string): Promise<TrendsData> {
-  try {
-    let modifiedPackageName = decodeURIComponent(packageName);
+import { removeSpecialChars } from "@/lib/utils";
+import type { TrendsData } from "@/types/google-trends";
 
-    modifiedPackageName = removeSpecialChars(modifiedPackageName);
+interface ApiError extends Error {
+	status: number;
+}
 
-    const url = `/api/google-trends?keyword=${modifiedPackageName}`;
+export function fetchGoogleTrends(packageName: string): Promise<TrendsData> {
+	let modifiedPackageName = decodeURIComponent(packageName);
+	modifiedPackageName = removeSpecialChars(modifiedPackageName);
 
-    const response = await fetch(url);
+	const url = `/api/google-trends?keyword=${modifiedPackageName}`;
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('API Error response:', errorText);
-      throw new Error(`API Error: ${response.status} - ${errorText}`);
-    }
+	return fetch(url)
+		.then((response) => {
+			if (!response.ok) {
+				return response.text().then((errorText) => {
+					console.error("API Error response:", errorText);
 
-    const contentType = response.headers.get('content-type');
+					const error = new Error(
+						`API Error: ${response.status} - ${errorText}`,
+					) as ApiError;
+					error.status = response.status;
+					throw error;
+				});
+			}
 
-    if (!contentType?.includes('application/json')) {
-      throw new Error(`잘못된 응답 타입: ${contentType}`);
-    }
+			const contentType = response.headers.get("content-type");
+			if (!contentType?.includes("application/json")) {
+				const error = new Error(`잘못된 응답 타입: ${contentType}`) as ApiError;
+				error.status = 400;
+				throw error;
+			}
 
-    const data = await response.json();
+			return response.json();
+		})
+		.then((data) => {
+			if (!data.interest || !Array.isArray(data.interest)) {
+				const error = new Error("유효하지 않은 데이터 형식") as ApiError;
+				error.status = 404;
+				throw error;
+			}
 
-    if (!data.interest || !Array.isArray(data.interest)) {
-      throw new Error('유효하지 않은 데이터 형식');
-    }
-
-    return data;
-  } catch (error) {
-    console.error('fetchGoogleTrends 에러:', error);
-    throw error;
-  }
+			return data as TrendsData;
+		})
+		.catch((error) => {
+			console.error("fetchGoogleTrends 에러:", error);
+			throw error;
+		});
 }

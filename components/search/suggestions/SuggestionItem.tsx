@@ -14,10 +14,10 @@ interface SuggestionItemProps {
 export default function SuggestionItem({ suggestion }: SuggestionItemProps) {
   const resetSearchQuery = useResetRecoilState(searchQueryAtom);
   return (
-    <div className="p-4  border-b border-surface-medium last:border-0 ">
-      <div className="flex items-center justify-between">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 ">
+    <div className="p-4 border-b border-surface-medium last:border-0">
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex-1 min-w-0">
+          <div className="flex flex-wrap items-center gap-1">
             <Link
               href={`/detail/${slashEncoding(suggestion.package.name)}`}
               className="hover:bg-surface-hover cursor-pointer text-primary-50 text-lg font-medium"
@@ -25,16 +25,21 @@ export default function SuggestionItem({ suggestion }: SuggestionItemProps) {
             >
               {suggestion.package.name}
             </Link>
-            {suggestion.badges?.isExactMatch && <Badge variant="exactMatch">exact match</Badge>}
-            {suggestion.badges?.isMostDownloaded && (
-              <Badge variant="downloads">most downloads</Badge>
-            )}
-            {suggestion.badges?.isMostRecent && <Badge variant="recent">most recent</Badge>}
-            {suggestion.badges?.isMostPopular && <Badge variant="popular">most popular</Badge>}
+            <div className="flex">
+              {suggestion.badges?.isExactMatch && <Badge variant="exactMatch">exact match</Badge>}
+              {suggestion.badges?.isMostDownloaded && (
+                <Badge variant="downloads">most downloads</Badge>
+              )}
+              {suggestion.badges?.isMostRecent && <Badge variant="recent">most recent</Badge>}
+              {suggestion.badges?.isMostPopular && <Badge variant="popular">most popular</Badge>}
+            </div>
           </div>
-          <p className="text-surface-white text-sm mt-1">{suggestion.package.description}</p>
+          <p className="text-surface-white text-sm truncate mt-1 max-w-full">
+            {suggestion.package.description}
+          </p>
         </div>
-        <div className="text-right whitespace-nowrap">
+
+        <div className="text-right whitespace-nowrap flex-shrink-0">
           <span className="text-surface-disabled text-sm">Downloads / week</span>
           <span
             className={`block font-medium ${
