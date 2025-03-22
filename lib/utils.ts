@@ -3,7 +3,12 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { MD5 } from "crypto-js";
-
+import type {
+	WeekData,
+	WeeklyDownload,
+	DownloadsData,
+} from "@/types/weeklydown";
+import type { PackageInfo } from "@/types/package";
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
@@ -133,6 +138,33 @@ export function getTimeAgo(date: string) {
 	return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
 }
 
+export function calCulateWeek(
+	downData: { day: string; downloads: number }[],
+	packages: string,
+): WeeklyDownload {
+	const data = downData;
+	const weeklyData: WeekData[] = [];
+	for (let i = 0; i < data.length; i += 7) {
+		const weekSlice = data.slice(i, i + 7);
+		const startDate = weekSlice[0]?.day || "";
+		const endDate = weekSlice[weekSlice.length - 1]?.day || "";
+		const totalDownloads: number = weekSlice.reduce(
+			(acc: number, cur: { downloads: number }) => acc + cur.downloads,
+			0,
+		);
+		weeklyData.push({
+			startDate: startDate,
+			endDate: endDate,
+			downloads: totalDownloads,
+		});
+	}
+
+	return {
+		packageName: packages,
+		weeklyData: weeklyData,
+	};
+}
+
 export function slashEncoding(name: string) {
 	return name.replace(/\//g, "%2F");
 }
@@ -143,3 +175,71 @@ export function removeSpecialChars(str: string): string {
 		.trim() // 앞뒤 공백 제거를 먼저하고
 		.replace(/\s+/g, "-"); // 남은 공백들을 '-'로 변경
 }
+
+//npm.ts
+export function Calculate(item: PackageInfo, downloads: number) {
+	// 시간 기반 활성도 점수 계산을 위한 범위 설정
+	const FIVE_YEARS = 5 * 365 * 24 * 60 * 60 * 1000; // 5년을 밀리초로
+	const dateRange: [number, number] = [Date.now() - FIVE_YEARS, Date.now()];
+	const scoreRange: [number, number] = [0, 1];
+
+	const convertRange = (
+		value: number,
+		[oldMin, oldMax]: [number, number],
+		[newMin, newMax]: [number, number] = [0, 1],
+	): number => {
+		const scaledValue =
+			((value - oldMin) * (newMax - newMin)) / (oldMax - oldMin) + newMin;
+		return Math.min(newMax, Math.max(newMin, scaledValue));
+	};
+
+	const convertRangeLogarithmic = (
+		value: number,
+		[oldMin, oldMax]: [number, number],
+		[newMin, newMax]: [number, number] = [0, 1],
+	): number => {
+		const logMin = Math.log(1);
+		const logMax = Math.log(100);
+		const scale = (logMax - logMin) / (oldMax - oldMin);
+		const logValue = Math.exp((value - oldMin) * scale + logMin);
+		return convertRange(logValue, [1, 100], [newMin, newMax]);
+	};
+	// 검색 점수 정규화 (1이 최대)
+	const normalizedSearchScore = Math.min(
+		1,
+		Math.log10(item.searchScore) / 3 || 0,
+	);
+
+	// 시간 기반 활성도 점수
+	const activityScore = convertRangeLogarithmic(
+		new Date(item.package?.date || Date.now()).getTime(),
+		dateRange,
+		scoreRange,
+	);
+
+	// 다운로드 점수 (로그 스케일로 변환)
+	const downloadScore = downloads ? Math.min(1, Math.log10(downloads) / 7) : 0;
+	// 일단 천만을 기준으로해서 점수 환산
+
+	// 최종 점수 계산 (가중치 적용)
+	// 조절 가능한 가중치
+	const finalScore =
+		normalizedSearchScore * (1 / 3) + // 검색 관련성
+		activityScore * (1 / 3) + // 활성도
+		downloadScore * (1 / 3); // 다운로드 수
+	return finalScore;
+}
+
+//weeklydown/index.tsx
+// 주간 다운로드 데이터를 차트 형식으로 변환하는 함수
+export const transformWeeklyDataToChartFormat = (
+	weeklyDownload: WeeklyDownload,
+): DownloadsData => {
+	return {
+		interest: weeklyDownload.weeklyData.map((week) => ({
+			formattedTime: week.startDate,
+			formattedAxisTime: week.startDate,
+			value: [week.downloads],
+		})),
+	};
+};
