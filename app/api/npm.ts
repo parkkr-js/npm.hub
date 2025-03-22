@@ -5,16 +5,17 @@ import type {
 	SearchResultPackageInfo,
 	DetailResultPackageInfo,
 } from "@/types/package";
-import { extractGitHubInfo } from "@/lib/utils";
+import { Calculate, extractGitHubInfo } from "@/lib/utils";
 import { CacheManager } from "@/lib/cache";
 import axios from "axios";
 
+const GITHUB_URL = process.env.NEXT_PUBLIC_GITHUB_API_URL;
 const NPM_BASE_URL = process.env.NEXT_PUBLIC_NPM_REGISTRY_URL;
 const NPM_POPULAR_ENDPOINT = process.env.NEXT_PUBLIC_NPM_POPULAR_ENDPOINT;
 const NPM_SEARCH_ENDPOINT = process.env.NEXT_PUBLIC_NPM_SEARCH_ENDPOINT;
 const NPM_API_URL = process.env.NEXT_PUBLIC_NPM_API_URL;
 const NPM_DOWNLOADS_ENDPOINT = process.env.NEXT_PUBLIC_NPM_DOWNLOAD_ENDPOINT;
-const GITHUB_TOKEN = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const suggestionsCache = new CacheManager<Promise<SuggestionPackageInfo[]>>({
 	maxSize: 100,
 	expiryTime: 1000 * 60 * 5,
@@ -229,63 +230,12 @@ export async function getPackageDetail(
 			const response = await axios.get(
 				`${NPM_BASE_URL}${NPM_SEARCH_ENDPOINT}${query}&size=1&from=0`,
 			);
-			// 시간 기반 활성도 점수 계산을 위한 범위 설정
-			const FIVE_YEARS = 5 * 365 * 24 * 60 * 60 * 1000; // 5년을 밀리초로
-			const dateRange: [number, number] = [Date.now() - FIVE_YEARS, Date.now()];
-			const scoreRange: [number, number] = [0, 1];
 
-			const convertRange = (
-				value: number,
-				[oldMin, oldMax]: [number, number],
-				[newMin, newMax]: [number, number] = [0, 1],
-			): number => {
-				const scaledValue =
-					((value - oldMin) * (newMax - newMin)) / (oldMax - oldMin) + newMin;
-				return Math.min(newMax, Math.max(newMin, scaledValue));
-			};
-
-			const convertRangeLogarithmic = (
-				value: number,
-				[oldMin, oldMax]: [number, number],
-				[newMin, newMax]: [number, number] = [0, 1],
-			): number => {
-				const logMin = Math.log(1);
-				const logMax = Math.log(100);
-				const scale = (logMax - logMin) / (oldMax - oldMin);
-				const logValue = Math.exp((value - oldMin) * scale + logMin);
-				return convertRange(logValue, [1, 100], [newMin, newMax]);
-			};
 			const mapPackageData = (
 				item: PackageInfo,
 				downloads = 0,
 				githubstars = 0,
 			) => {
-				// 검색 점수 정규화 (1이 최대)
-				const normalizedSearchScore = Math.min(
-					1,
-					Math.log10(item.searchScore) / 3 || 0,
-				);
-
-				// 시간 기반 활성도 점수
-				const activityScore = convertRangeLogarithmic(
-					new Date(item.package?.date || Date.now()).getTime(),
-					dateRange,
-					scoreRange,
-				);
-
-				// 다운로드 점수 (로그 스케일로 변환)
-				const downloadScore = downloads
-					? Math.min(1, Math.log10(downloads) / 7)
-					: 0;
-				// 일단 천만을 기준으로해서 점수 환산
-
-				// 최종 점수 계산 (가중치 적용)
-				// 조절 가능한 가중치
-				const finalScore =
-					normalizedSearchScore * (1 / 3) + // 검색 관련성
-					activityScore * (1 / 3) + // 활성도
-					downloadScore * (1 / 3); // 다운로드 수
-
 				return {
 					package: {
 						name: item.package?.name || "Unknown Package",
@@ -306,7 +256,7 @@ export async function getPackageDetail(
 						starsCount: githubstars,
 					},
 					score: {
-						final: finalScore,
+						final: Calculate(item, downloads),
 					},
 				};
 			};
@@ -332,13 +282,13 @@ export async function getPackageDetail(
 
 							if (!githubInfo) return 0;
 
-							const headers = process.env.GITHUB_TOKEN
-								? { Authorization: `token ${process.env.GITHUB_TOKEN}` }
+							const headers = GITHUB_TOKEN
+								? { Authorization: `token ${GITHUB_TOKEN}` }
 								: {};
 
 							return axios
 								.get<{ stargazers_count: number }>(
-									`https://api.github.com/repos/${githubInfo.owner}/${githubInfo.repo}`,
+									`${GITHUB_URL}${githubInfo.owner}/${githubInfo.repo}`,
 									{ headers },
 								)
 								.then((res) => res.data?.stargazers_count || 0)

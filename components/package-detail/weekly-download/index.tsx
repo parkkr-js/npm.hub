@@ -14,6 +14,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { transformWeeklyDataToChartFormat } from "@/lib/utils";
 import { CustomTooltip } from "./CustomTooltip";
 
 //useones 라는 hook 만들어서 첫 렌더링 될때만 한번만 나오면됨
@@ -55,19 +56,6 @@ export function WeeklyDownloads({ packageName }: WeeklyDownloadsProps) {
 		loadData();
 	}, [packageName]);
 
-	// 주간 다운로드 데이터를 차트 형식으로 변환하는 함수
-	const transformWeeklyDataToChartFormat = (
-		weeklyDownload: WeeklyDownload,
-	): DownloadsData => {
-		return {
-			interest: weeklyDownload.weeklyData.map((week) => ({
-				formattedTime: week.startDate,
-				formattedAxisTime: week.startDate,
-				value: [week.downloads],
-			})),
-		};
-	};
-
 	const calculateAverage = useMemo(() => {
 		if (!downloadsData?.interest) return 0;
 		const sum = downloadsData.interest.reduce(
@@ -108,7 +96,8 @@ export function WeeklyDownloads({ packageName }: WeeklyDownloadsProps) {
 						Weekly download graph
 					</p>
 					<p className="text-[#F6F6F6] mb-4">
-						Track the usage trends of {packageName} over the past year.
+						Track the usage trends of {decodeURIComponent(packageName)} over the
+						past year.
 					</p>
 
 					<div className="h-[352px] w-[661px] ml-14 mt-3 rounded-[20px] bg-white">
@@ -128,6 +117,15 @@ export function WeeklyDownloads({ packageName }: WeeklyDownloadsProps) {
 								<YAxis
 									domain={[0, "auto"]}
 									tick={{ fontSize: 12 }}
+									tickFormatter={(value) => {
+										if (value >= 1000000) {
+											return `${(value / 1000000).toFixed(1)}M`;
+										}
+										if (value >= 1000) {
+											return `${(value / 1000).toFixed(1)}K`;
+										}
+										return value;
+									}}
 									label={{
 										value: "Downloads",
 										angle: -90,
