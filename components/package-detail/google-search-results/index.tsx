@@ -75,7 +75,7 @@ export function GoogleSearchResults({ packageName }: SearchResultsProps) {
 				>
 					{results.map((result, index) => (
 						<div
-							key={index}
+							key={result.title}
 							className=" w-[272px] rounded-[10px] border border-[var(--secondary-black60,#7B7C81)] hover:shadow-lg transition-shadow duration-200"
 						>
 							<a
