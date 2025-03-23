@@ -1,8 +1,9 @@
 // components/package-detail/google-trends/CustomTooltip.tsx
+"use client";
 import type { CustomTooltipProps } from "@/types/google-trends";
 import { Card } from "@/components/ui/card";
-
-export function CustomTooltip({
+import { memo } from "react";
+export const CustomTooltip = memo(function CustomTooltip({
 	active,
 	payload,
 	label,
@@ -21,4 +22,4 @@ export function CustomTooltip({
 		);
 	}
 	return null;
-}
+});

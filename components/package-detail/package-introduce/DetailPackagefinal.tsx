@@ -1,15 +1,14 @@
+"use client";
 // compoenents/search-results/SearchResultItem.tsx
 import { getTimeAgo } from "@/lib/utils";
 import { getPublisherAvatarUrl } from "@/lib/utils";
 import { Keywords } from "@/components/search-results/Keywords";
 import type { DetailResultPackageInfo } from "@/types/package";
 import Image from "next/image";
-import { useRecoilValue } from "recoil";
-import { GoogletrendsAtom } from "@/store/atoms";
+import { Tooltip } from "./Tooltip";
 interface DetailPackageItemProps {
 	result: DetailResultPackageInfo;
 }
-import { useState } from "react";
 
 export function DetailPackage({ result }: DetailPackageItemProps) {
 	//const currentPackage = useRecoilValue(GoogletrendsAtom);
@@ -36,7 +35,9 @@ export function DetailPackage({ result }: DetailPackageItemProps) {
 						<span>{getTimeAgo(pkg.date)}</span>
 						<span>•</span>
 						<Image
-							src={getPublisherAvatarUrl(pkg.publisher.username)}
+							src={getPublisherAvatarUrl(
+								pkg.publisher?.email || pkg.author?.email || "",
+							)}
 							alt={pkg.publisher.username}
 							width={24}
 							height={24}
@@ -62,24 +63,7 @@ export function DetailPackage({ result }: DetailPackageItemProps) {
 							<Keywords keywords={pkg.keywords} />
 						</div>
 					</div>
-					<div className="flex-col ml-[6%] mt-[10%] max-w-[170px] ">
-						<p className="text-secondary-30 font-semibold text-base mr-4">
-							Command
-						</p>
-						<div className="flex w-full bg-gray-200 h-10 p-2 rounded-lg bg-secondary-70 ">
-							<p className=" overflow-x-auto whitespace-nowrap  [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden text-[#FFF] ">{`npm i ${pkg.name}`}</p>
-							<img
-								onClick={handleCopy}
-								onKeyUp={(e) => {
-									if (e.key === "Enter") handleCopy();
-								}}
-								src="/images/copyvector.svg"
-								alt="copy"
-								className="cursor-pointer w-4 h-5 mt-1 ml-1"
-								tabIndex={0}
-							/>
-						</div>
-					</div>
+					<Tooltip name={pkg.name} />
 				</div>
 			</div>
 			<div className="bg-secondary-90 w-[785px] rounded-[20px] mt-4">

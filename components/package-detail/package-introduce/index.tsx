@@ -1,8 +1,5 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
-import { useSetRecoilState, useRecoilValue } from "recoil";
-import { detailPackageAtom } from "@/store/atoms";
 import type { DetailResultPackageInfo } from "@/types/package";
 
 import { DetailPackage } from "./DetailPackagefinal";
