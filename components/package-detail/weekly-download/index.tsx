@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, memo } from "react";
 import {
 	LineChart,
 	Line,
@@ -16,6 +16,7 @@ import { CustomTooltip } from "./CustomTooltip";
 import type { WeeklyDownload, DownloadsData } from "@/types/weeklydown";
 import { getWeeklyDownloads } from "@/app/api/weekly-down/route";
 import { WeeklyDownSkeleton } from "@/components/skeletons/WeeklyDownSkeleton";
+import { DownloadsShow } from "./DownloadsShow";
 
 //useones 라는 hook 만들어서 첫 렌더링 될때만 한번만 나오면됨
 
@@ -55,6 +56,8 @@ export function WeeklyDownloads({ packageName }: WeeklyDownloadsProps) {
 
 		loadData();
 	}, [packageName]);
+
+	//결과 값을 캐싱해서 하위 컴포넌트로 보내니까 useMemo 사용, 함수 자체가 쓰이는 것이 아니기 떄문에 useCallback 사용하지 않음
 
 	const calculateAverage = useMemo(() => {
 		if (!downloadsData?.interest) return 0;
@@ -99,105 +102,13 @@ export function WeeklyDownloads({ packageName }: WeeklyDownloadsProps) {
 						Track the usage trends of {decodeURIComponent(packageName)} over the
 						past year.
 					</p>
-
-					<div className="h-[352px] w-[661px] ml-14 mt-3 rounded-[20px] bg-white">
-						<ResponsiveContainer width="100%" height="100%">
-							<LineChart
-								data={downloadsData?.interest || []}
-								margin={{ top: 10, right: 30, left: 10, bottom: 30 }}
-							>
-								<CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-								<XAxis
-									dataKey="formattedTime"
-									angle={-45}
-									textAnchor="end"
-									height={90}
-									tick={{ fontSize: 12 }}
-								/>
-								<YAxis
-									domain={[0, "auto"]}
-									tick={{ fontSize: 12 }}
-									tickFormatter={(value) => {
-										if (value >= 1000000) {
-											return `${(value / 1000000).toFixed(1)}M`;
-										}
-										if (value >= 1000) {
-											return `${(value / 1000).toFixed(1)}K`;
-										}
-										return value;
-									}}
-									label={{
-										value: "Downloads",
-										angle: -90,
-										position: "insideLeft",
-										style: { textAnchor: "middle" },
-									}}
-								/>
-
-								<Tooltip
-									content={(props) => (
-										<CustomTooltip {...props} average={calculateAverage} />
-									)}
-								/>
-								<Legend />
-
-								<ReferenceLine
-									y={calculateAverage}
-									stroke="#000000"
-									strokeDasharray="3 3"
-									label={{
-										value: "Average",
-										position: "left",
-										fill: "#000000",
-										fontSize: 12,
-										cursor: "pointer",
-									}}
-								/>
-
-								<Line
-									className="pt-2"
-									type="monotone"
-									dataKey={(d) => d.value[0]}
-									name="Downloads"
-									stroke="#4682B4"
-									strokeWidth={2}
-									dot={(props) => {
-										const isMax = props.value === calculateMax;
-										return isMax ? (
-											<svg
-												width="14"
-												height="14"
-												viewBox="0 0 14 14"
-												fill="none"
-												xmlns="http://www.w3.org/2000/svg"
-												x={props.cx - 7}
-												y={props.cy - 7}
-											>
-												<title>Maximum Downloads Point</title>
-												<circle
-													cx="7"
-													cy="7"
-													r="6.5"
-													fill="#4682B4"
-													stroke="#4682B4"
-												/>
-												<circle cx="7" cy="7" r="4.5" stroke="#F0F1F7" />
-											</svg>
-										) : (
-											<circle
-												cx={props.cx}
-												cy={props.cy}
-												r={0}
-												fill="none"
-												stroke="none"
-											/>
-										);
-									}}
-									activeDot={{ r: 8 }}
-								/>
-							</LineChart>
-						</ResponsiveContainer>
-					</div>
+					{downloadsData && (
+						<DownloadsShow
+							downloadsData={downloadsData}
+							calculateMax={calculateMax}
+							calculateAverage={calculateAverage}
+						/>
+					)}
 				</div>
 			</div>
 		</>
