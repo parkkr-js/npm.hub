@@ -1,5 +1,5 @@
 "use client";
-import { getWeeklyDownloads } from "@/app/api/weekly-down/route";
+import { getWeeklyDownloads } from "@/app/api/weekly-down/action";
 import { WeeklyDownSkeleton } from "@/components/skeletons/WeeklyDownSkeleton";
 import { transformWeeklyDataToChartFormat } from "@/lib/utils";
 import type { DownloadsData, WeeklyDownload } from "@/types/weeklydown";
